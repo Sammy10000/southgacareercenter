@@ -9,14 +9,14 @@
                     outline-offset: 2px !important;
                     border-radius: 2px !important;
                 }
-                
-                button:focus, 
-                a:focus, 
-                input:focus, 
-                textarea:focus, 
+
+                button:focus,
+                a:focus,
+                input:focus,
+                textarea:focus,
                 select:focus {
                     outline: 4px solid darkblue !important;
-                    outline-offset: 2px !important;
+                    outline-offset: 2px !important; /* Initial offset */
                     border-radius: 2px !important;
                     padding-top: 4px !important;
                     padding-bottom: 2px !important;
@@ -36,4 +36,13 @@
         applyFocusStyles();
     });
     observer.observe(document.body, { childList: true, subtree: true });
+
+    // *** MODIFIED SECTION ***
+    document.addEventListener('focus', (event) => {  // Listen on the document
+        const focusedElement = event.target;
+        if (focusedElement.matches('button, a, input, textarea, select')) { // Check if it's a target element
+            focusedElement.style.outlineOffset = '5px'; // Apply the desired offset
+        }
+
+    }, true); // Important: Capture phase
 })();
