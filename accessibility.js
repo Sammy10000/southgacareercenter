@@ -1,48 +1,46 @@
 (function() {
-    function applyFocusStyles() {
-        if (!document.getElementById('focus-styles')) {
-            const styleElement = document.createElement('style');
-            styleElement.id = 'focus-styles';
-            styleElement.textContent = `
-                :focus {
-                    outline: 2px solid darkblue !important;
-                    outline-offset: 2px !important;
-                    border-radius: 2px !important;
-                }
+    function testScriptLoad() {
+        // Check if the test variable already exists (to prevent multiple alerts)
+        if (typeof window.scriptLoadedTest === 'undefined') {
+            window.scriptLoadedTest = true; // Set the test variable
 
-                button:focus,
-                a:focus,
-                input:focus,
-                textarea:focus,
-                select:focus {
-                    outline: 4px solid darkblue !important;
-                    outline-offset: 2px !important; /* Initial offset */
-                    border-radius: 2px !important;
-                    padding-top: 4px !important;
-                    padding-bottom: 2px !important;
-                }
+            // Option 1: Simple alert (can be annoying for users)
+            // alert("Accessibility script loaded successfully!");
+
+            // Option 2: Console message (better for debugging)
+            console.log("Accessibility script loaded successfully!");
+
+            // Option 3:  A temporary visual indicator (less intrusive)
+            const indicator = document.createElement('div');
+            indicator.style.cssText = `
+                position: fixed; /* Stays in place */
+                top: 10px;
+                left: 10px;
+                background-color: lightgreen;
+                padding: 5px 10px;
+                border-radius: 5px;
+                z-index: 9999; /* Ensure it's on top */
+                opacity: 0.8; /* Slightly transparent */
+                transition: opacity 0.5s ease-in-out; /* Fade effect */
             `;
-            document.head.appendChild(styleElement);
+            indicator.textContent = "Accessibility script loaded";
+            document.body.appendChild(indicator);
+
+            // Remove the indicator after a few seconds
+            setTimeout(() => {
+                indicator.style.opacity = 0;
+                setTimeout(() => {
+                    indicator.remove();
+                }, 500); // Match the transition duration
+            }, 3000); // Show for 3 seconds
+
+
         }
     }
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', applyFocusStyles);
+        document.addEventListener('DOMContentLoaded', testScriptLoad);
     } else {
-        applyFocusStyles();
+        testScriptLoad();
     }
-
-    const observer = new MutationObserver(() => {
-        applyFocusStyles();
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
-
-    // *** MODIFIED SECTION ***
-    document.addEventListener('focus', (event) => {  // Listen on the document
-        const focusedElement = event.target;
-        if (focusedElement.matches('button, a, input, textarea, select')) { // Check if it's a target element
-            focusedElement.style.outlineOffset = '5px'; // Apply the desired offset
-        }
-
-    }, true); // Important: Capture phase
 })();
